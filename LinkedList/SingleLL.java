@@ -195,6 +195,11 @@ public class SingleLL<T> {
         }
     }
 
+    public void deleteAll(){
+        size = 0;
+        head = null;
+    }
+
     public String toString(){
         if(size == 0)
             return "Empty List";

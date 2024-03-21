@@ -18,7 +18,7 @@ public class DoubleLLGUI<T> extends JFrame {
     }
 
     private void initUI() {
-        setTitle("Single Linked List Visualizer");
+        setTitle("Double Linked List Visualizer");
         setSize(900, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);

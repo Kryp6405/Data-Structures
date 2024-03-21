@@ -187,6 +187,16 @@ public class SingleLLGUI<T> extends JFrame {
             }
         });
 
+        //Reset
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                list.deleteAll();
+                updateSizeLabel();
+                drawingPanel.repaint();
+            }
+        });
         
         JPanel leftControlPanel = new JPanel();
         leftControlPanel.setLayout(new BoxLayout(leftControlPanel, BoxLayout.Y_AXIS)); // Set layout
@@ -253,7 +263,13 @@ public class SingleLLGUI<T> extends JFrame {
         revSetPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         revSetPanel.add(revButton);
 
+        JPanel resetSetPanel = new JPanel();
+        resetSetPanel.setBackground(Color.BLACK);
+        resetSetPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        resetSetPanel.add(resetButton);
+
         rightControlPanel.add(revSetPanel);
+        rightControlPanel.add(resetSetPanel);
 
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS)); 
