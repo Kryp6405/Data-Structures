@@ -290,7 +290,7 @@ public class SingleLLGUI<T> extends JFrame {
     }
 
     private void drawList(Graphics g) {
-        SingleLL<T>.Node<T> current = list.head;
+        SingleLL<T>.Node current = list.head;
         int x = 20, y = 80; // Starting position
         int counter = 1;
         while (current != null) {

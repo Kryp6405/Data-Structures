@@ -291,7 +291,7 @@ public class DoubleLLGUI<T> extends JFrame {
     }
 
     private void drawList(Graphics g) {
-        DoubleLL<T>.Node<T> current = list.head;
+        DoubleLL<T>.Node current = list.head;
         int x = 40, y = 80; // Starting position
         int counter = 1;
         while (current != null) {

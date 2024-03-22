@@ -1,12 +1,12 @@
 package DataStructures.LinkedList;
 
-public class SingleLL<T> {
+public class DoubleLL<T> {
     int size;
-    Node<T> head;
+    Node head, tail;
 
-    public SingleLL(){
+    public DoubleLL(){
         size = 0;
-        head = null;
+        head = tail = null;
     }
 
     public boolean isEmpty(){
@@ -18,17 +18,16 @@ public class SingleLL<T> {
     }
 
     public void add(T val){     
-        Node<T> newNode = new Node<>(val);
+        Node newNode = new Node(val);
 
-        if (head == null) {
-            head = newNode;
+        if (head == null && tail == null) {
+            head = tail = newNode;
+            head.prev = tail.next = null;
         } else {
-            Node<T> curr = head;
-
-            while (curr.next != null) {
-                curr = curr.next;
-            }
-            curr.next = newNode;
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+            tail.next = null;
         }
 
         size++;
@@ -38,27 +37,28 @@ public class SingleLL<T> {
         if(loc < 0 || loc > size)
             throw new IndexOutOfBoundsException();
         else{
-            Node<T> newNode = new Node<>(val);
+            Node newNode = new Node(val);
 
             if(loc == 0){
                 newNode.next = head;
+                if(head != null)
+                    head.prev = newNode;
                 head = newNode;
+                if(size == 0)
+                    tail = newNode;
             } else if(loc == size){
-                Node<T> curr = head;
-
-                while(curr.next != null) {
-                    curr = curr.next;
-                }
-                curr.next = newNode;
+                tail.next = newNode;
+                newNode.prev = tail;
+                tail = newNode;
             } else{
-                Node<T> curr = head, prev = null;
+                Node curr = head;
 
-                while(curr.next != null && loc-- > 0) {
-                    prev = curr;
+                for(int i = 0; i < loc; i++)
                     curr = curr.next;
-                }
-                prev.next = newNode;
+                curr.prev.next = newNode;
+                newNode.prev = curr.prev;
                 newNode.next = curr;
+                curr.prev = newNode;
             }
 
             size++;
@@ -73,22 +73,25 @@ public class SingleLL<T> {
             if(loc == 0){
                 remove_val = head.val;
                 head = head.next;
-            } else if(loc == (size - 1)){
-                Node<T> curr = head;
-                while(curr.next != null){
-                    curr = curr.next;
-                }
-                remove_val = curr.val;
-                curr = null;
+                if(head != null)
+                    head.prev = null;
+                else
+                    tail = null;
+            } else if(loc == (size - 1)){          
+                remove_val = tail.val;
+                tail = tail.prev;
+                if(tail != null)
+                    tail.next = null;
+                else 
+                    head = null;
             } else {
-                Node<T> prev = null, curr = head;
-                while(curr != null && loc-- > 0){
-                    prev = curr;
+                Node curr = head;
+
+                for(int i = 0; i < loc; i++)
                     curr = curr.next;
-                }
                 remove_val = curr.val;
-                curr = curr.next;
-                prev.next = curr;
+                curr.next.prev = curr.prev;
+                curr.prev.next = curr.next;
             }
 
             size--;
@@ -97,22 +100,35 @@ public class SingleLL<T> {
     }
 
     public void removeAll(int start, int end){
-        if(start < 0 || start >= size() || end > size() || end < start)
+        if(start < 0 || start >= size || end > size || end < start)
             throw new IndexOutOfBoundsException();
-        else{
-            Node<T> prev = null, curr = head;
-            int cnt = 0;
-            while(curr != null && cnt++ != start){
-                prev = curr;
-                curr = curr.next;
-            }
-            for(int i = start; i < end; i++){
-                curr = curr.next;
-            }
-            prev.next = curr;
+        else if(start == 0) { 
+            for(int i = 0; i <= end && head != null; i++) 
+                head = head.next;
 
-            size -= (end - start);
+            if(head != null)
+                head.prev = null;
+            else
+                tail = null;
+        } else{
+            Node startNode = head;
+            for (int i = 0; i < start - 1; i++) {
+                startNode = startNode.next;
+            }
+            Node endNode = startNode;
+            for (int i = start - 1; i < end && endNode != null; i++) { 
+                endNode = endNode.next;
+            }
+
+            startNode.next = endNode;
+            if (endNode != null) 
+                endNode.prev = startNode;
+            else 
+                tail = startNode; 
+
         }
+
+        size -= (end - start);
     }
 
     public T get(int loc){
@@ -124,16 +140,11 @@ public class SingleLL<T> {
             if(loc == 0)
                 ret_val = head.val;
             else if(loc == size - 1){
-                Node<T> curr = head;
-
-                while(curr.next != null){
-                    curr = curr.next;
-                }
-                ret_val = curr.val;
+                ret_val = tail.val;
             } else{
-                Node<T> curr = head; 
+                Node curr = head; 
 
-                while(curr != null && loc-- > 0){
+                for(int i = 0; i < loc; i++){
                     curr = curr.next;
                 }
                 ret_val = curr.val;
@@ -154,15 +165,10 @@ public class SingleLL<T> {
                 head.val = val;
             }
             else if(loc == size - 1){
-                Node<T> curr = head;
-
-                while(curr.next != null){
-                    curr = curr.next;
-                }
-                prev_val = curr.val;
-                curr.val = val;
+                prev_val = tail.val;
+                tail.val = val;
             } else{
-                Node<T> curr = head; 
+                Node curr = head; 
 
                 while(curr != null && loc-- > 0){
                     curr = curr.next;
@@ -176,7 +182,7 @@ public class SingleLL<T> {
     }
 
     public boolean contains(T val){
-        Node<T> curr = head;
+        Node curr = head;
 
         while(curr != null){
             if(!curr.val.equals(val))
@@ -188,7 +194,7 @@ public class SingleLL<T> {
         return false;
     }
 
-    public void reverse() {
+    public void reverse(){
         for(int i = size - 2; i >= 0; i--){
             add(get(i));
             remove(i);
@@ -197,7 +203,7 @@ public class SingleLL<T> {
 
     public void deleteAll(){
         size = 0;
-        head = null;
+        head = tail = null;
     }
 
     public String toString(){
@@ -213,13 +219,16 @@ public class SingleLL<T> {
         return sb.toString();
     }
 
-    @SuppressWarnings("hiding")
-    class Node<T>{
+    class Node{
         T val;
-        Node<T> next;
+        Node prev, next;
 
         Node(){}
         Node(T val){ this.val = val; }
-        Node(T val, Node<T> next){ this.val = val; this.next = next;}
+        Node(T val, Node prev, Node next){ 
+            this.val = val; 
+            this.prev = prev; 
+            this.next = next;
+        }
     }    
 }

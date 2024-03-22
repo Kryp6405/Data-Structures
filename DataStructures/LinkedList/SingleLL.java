@@ -1,12 +1,12 @@
 package DataStructures.LinkedList;
 
-public class DoubleLL<T> {
+public class SingleLL<T> {
     int size;
-    Node<T> head, tail;
+    Node head;
 
-    public DoubleLL(){
+    public SingleLL(){
         size = 0;
-        head = tail = null;
+        head = null;
     }
 
     public boolean isEmpty(){
@@ -18,16 +18,17 @@ public class DoubleLL<T> {
     }
 
     public void add(T val){     
-        Node<T> newNode = new Node<>(val);
+        Node newNode = new Node(val);
 
-        if (head == null && tail == null) {
-            head = tail = newNode;
-            head.prev = tail.next = null;
+        if (head == null) {
+            head = newNode;
         } else {
-            tail.next = newNode;
-            newNode.prev = tail;
-            tail = newNode;
-            tail.next = null;
+            Node curr = head;
+
+            while (curr.next != null) {
+                curr = curr.next;
+            }
+            curr.next = newNode;
         }
 
         size++;
@@ -37,28 +38,27 @@ public class DoubleLL<T> {
         if(loc < 0 || loc > size)
             throw new IndexOutOfBoundsException();
         else{
-            Node<T> newNode = new Node<>(val);
+            Node newNode = new Node(val);
 
             if(loc == 0){
                 newNode.next = head;
-                if(head != null)
-                    head.prev = newNode;
                 head = newNode;
-                if(size == 0)
-                    tail = newNode;
             } else if(loc == size){
-                tail.next = newNode;
-                newNode.prev = tail;
-                tail = newNode;
-            } else{
-                Node<T> curr = head;
+                Node curr = head;
 
-                for(int i = 0; i < loc; i++)
+                while(curr.next != null) {
                     curr = curr.next;
-                curr.prev.next = newNode;
-                newNode.prev = curr.prev;
+                }
+                curr.next = newNode;
+            } else{
+                Node curr = head, prev = null;
+
+                while(curr.next != null && loc-- > 0) {
+                    prev = curr;
+                    curr = curr.next;
+                }
+                prev.next = newNode;
                 newNode.next = curr;
-                curr.prev = newNode;
             }
 
             size++;
@@ -73,25 +73,22 @@ public class DoubleLL<T> {
             if(loc == 0){
                 remove_val = head.val;
                 head = head.next;
-                if(head != null)
-                    head.prev = null;
-                else
-                    tail = null;
-            } else if(loc == (size - 1)){          
-                remove_val = tail.val;
-                tail = tail.prev;
-                if(tail != null)
-                    tail.next = null;
-                else 
-                    head = null;
-            } else {
-                Node<T> curr = head;
-
-                for(int i = 0; i < loc; i++)
+            } else if(loc == (size - 1)){
+                Node curr = head;
+                while(curr.next != null){
                     curr = curr.next;
+                }
                 remove_val = curr.val;
-                curr.next.prev = curr.prev;
-                curr.prev.next = curr.next;
+                curr = null;
+            } else {
+                Node prev = null, curr = head;
+                while(curr != null && loc-- > 0){
+                    prev = curr;
+                    curr = curr.next;
+                }
+                remove_val = curr.val;
+                curr = curr.next;
+                prev.next = curr;
             }
 
             size--;
@@ -100,35 +97,22 @@ public class DoubleLL<T> {
     }
 
     public void removeAll(int start, int end){
-        if(start < 0 || start >= size || end > size || end < start)
+        if(start < 0 || start >= size() || end > size() || end < start)
             throw new IndexOutOfBoundsException();
-        else if(start == 0) { 
-            for(int i = 0; i <= end && head != null; i++) 
-                head = head.next;
-
-            if(head != null)
-                head.prev = null;
-            else
-                tail = null;
-        } else{
-            Node<T> startNode = head;
-            for (int i = 0; i < start - 1; i++) {
-                startNode = startNode.next;
+        else{
+            Node prev = null, curr = head;
+            int cnt = 0;
+            while(curr != null && cnt++ != start){
+                prev = curr;
+                curr = curr.next;
             }
-            Node<T> endNode = startNode;
-            for (int i = start - 1; i < end && endNode != null; i++) { 
-                endNode = endNode.next;
+            for(int i = start; i < end; i++){
+                curr = curr.next;
             }
+            prev.next = curr;
 
-            startNode.next = endNode;
-            if (endNode != null) 
-                endNode.prev = startNode;
-            else 
-                tail = startNode; 
-
+            size -= (end - start);
         }
-
-        size -= (end - start);
     }
 
     public T get(int loc){
@@ -140,11 +124,16 @@ public class DoubleLL<T> {
             if(loc == 0)
                 ret_val = head.val;
             else if(loc == size - 1){
-                ret_val = tail.val;
-            } else{
-                Node<T> curr = head; 
+                Node curr = head;
 
-                for(int i = 0; i < loc; i++){
+                while(curr.next != null){
+                    curr = curr.next;
+                }
+                ret_val = curr.val;
+            } else{
+                Node curr = head; 
+
+                while(curr != null && loc-- > 0){
                     curr = curr.next;
                 }
                 ret_val = curr.val;
@@ -165,10 +154,15 @@ public class DoubleLL<T> {
                 head.val = val;
             }
             else if(loc == size - 1){
-                prev_val = tail.val;
-                tail.val = val;
+                Node curr = head;
+
+                while(curr.next != null){
+                    curr = curr.next;
+                }
+                prev_val = curr.val;
+                curr.val = val;
             } else{
-                Node<T> curr = head; 
+                Node curr = head; 
 
                 while(curr != null && loc-- > 0){
                     curr = curr.next;
@@ -182,7 +176,7 @@ public class DoubleLL<T> {
     }
 
     public boolean contains(T val){
-        Node<T> curr = head;
+        Node curr = head;
 
         while(curr != null){
             if(!curr.val.equals(val))
@@ -194,7 +188,7 @@ public class DoubleLL<T> {
         return false;
     }
 
-    public void reverse(){
+    public void reverse() {
         for(int i = size - 2; i >= 0; i--){
             add(get(i));
             remove(i);
@@ -203,7 +197,7 @@ public class DoubleLL<T> {
 
     public void deleteAll(){
         size = 0;
-        head = tail = null;
+        head = null;
     }
 
     public String toString(){
@@ -219,17 +213,12 @@ public class DoubleLL<T> {
         return sb.toString();
     }
 
-    @SuppressWarnings("hiding")
-    class Node<T>{
+    class Node{
         T val;
-        Node<T> prev, next;
+        Node next;
 
         Node(){}
         Node(T val){ this.val = val; }
-        Node(T val, Node<T> prev, Node<T> next){ 
-            this.val = val; 
-            this.prev = prev; 
-            this.next = next;
-        }
+        Node(T val, Node next){ this.val = val; this.next = next;}
     }    
 }
