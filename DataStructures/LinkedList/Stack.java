@@ -1,10 +1,10 @@
 package DataStructures.LinkedList;
 
 public class Stack<T> {
-    private SingleLL<T> stack;
+    private DoubleLL<T> stack;
 
     public Stack(){
-        stack = new SingleLL<>();
+        stack = new DoubleLL<>();
     }
 
     public boolean isEmpty(){

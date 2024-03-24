@@ -86,6 +86,7 @@ public class BinaryTreeGUI<V> extends JFrame {
         add(traversalControlPanel, BorderLayout.SOUTH); 
     }
 
+    @SuppressWarnings("unchecked")
     private void insertNode(ActionEvent e) {
         try {
             String key = insertField1.getText();
