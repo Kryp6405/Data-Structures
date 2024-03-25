@@ -27,6 +27,10 @@ public class Stack<T> {
         return stack.get(stack.size()-1);
     }
 
+    public DoubleLL<T> toList(){
+        return stack;
+    }
+
     public String toString(){
         return stack.toString();
     }
