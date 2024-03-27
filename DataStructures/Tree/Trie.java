@@ -24,6 +24,7 @@ class Trie {
                 current = kids.get(letter);
             }
         }
+        
         current.setEndOfWord(true);
     }
 
@@ -56,14 +57,6 @@ class Trie {
         }
         if(maxEntry == null) return '_';
         return maxEntry.getKey();
-    }
-
-    public static void main(String[]args){
-        Trie t = new Trie();
-        t.add("hi");
-        t.add("high");
-        t.add("low");
-        System.out.println(t.root.getChildren());
     }
 
 	class Node {
