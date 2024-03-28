@@ -116,6 +116,10 @@ public class Graph<T> {
         System.out.println("Done");
     }
 
+    public Map<T, List<Edge>> getAdjacencyList(){
+        return adjacencyList;
+    }
+
     class Edge {
         private T destination;
         private int weight;
@@ -123,6 +127,10 @@ public class Graph<T> {
         Edge(T destination, int weight){
             this.destination = destination;
             this.weight = weight;
+        }
+        
+        public T getDestination() {
+            return destination;
         }
 
         public int getWeight() {
