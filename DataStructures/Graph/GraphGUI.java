@@ -1,70 +1,109 @@
 package DataStructures.Graph;
-
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.Set;
 
-/* Incomplete */
-public class GraphGUI extends JFrame {
-    private JRadioButton directedButton;
-    private JRadioButton undirectedButton;
-    private JButton createGraphButton;
-    private Graph<String> graph;
+public class GraphGUI<T> extends JFrame {
 
-    public GraphGUI() {
-        createUI();
-    }
+    private Graph<T> graph;
+    private JTextField vertexField;
+    private JTextField sourceField;
+    private JTextField destinationField;
+    private JTextField weightField;
+    private JPanel graphPanel;
 
-    private void createUI() {
-        setTitle("Graph Type Selector");
-        setSize(400, 200);
+    public GraphGUI(Graph<T> graph) {
+        super("Graph Visualizer");
+        this.graph = graph;
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(800, 600);
         setLocationRelativeTo(null);
-        setLayout(new FlowLayout());
 
-        ButtonGroup group = new ButtonGroup();
-        directedButton = new JRadioButton("Directed", true);
-        undirectedButton = new JRadioButton("Undirected", false);
-        group.add(directedButton);
-        group.add(undirectedButton);
-
-        createGraphButton = new JButton("Create Graph");
-        createGraphButton.addActionListener(e -> createGraph());
-
-        add(directedButton);
-        add(undirectedButton);
-        add(createGraphButton);
+        // Initialize UI components
+        initializeUI();
     }
 
-    private void createGraph() {
-        GraphType type = directedButton.isSelected() ? GraphType.DIRECTED : GraphType.UNDIRECTED;
-        graph = new Graph<>(type);
-        
+    private void initializeUI() {
+        // Layout for the entire frame
+        setLayout(new BorderLayout());
+
+        // Control panel for adding vertices and edges
+        JPanel controlPanel = new JPanel();
+        vertexField = new JTextField(5);
+        JButton addVertexButton = new JButton("Add Vertex");
+        sourceField = new JTextField(5);
+        destinationField = new JTextField(5);
+        weightField = new JTextField(5);
+        JButton addEdgeButton = new JButton("Add Edge");
+
+        addVertexButton.addActionListener(e -> addVertex());
+        addEdgeButton.addActionListener(e -> addEdge());
+
+        controlPanel.add(new JLabel("Vertex:"));
+        controlPanel.add(vertexField);
+        controlPanel.add(addVertexButton);
+        controlPanel.add(new JLabel("Source:"));
+        controlPanel.add(sourceField);
+        controlPanel.add(new JLabel("Dest:"));
+        controlPanel.add(destinationField);
+        controlPanel.add(new JLabel("Weight:"));
+        controlPanel.add(weightField);
+        controlPanel.add(addEdgeButton);
+
+        // Graph panel where the graph will be displayed
+        graphPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                drawGraph(g);
+            }
+        };
+        graphPanel.setPreferredSize(new Dimension(800, 500));
+        graphPanel.setBackground(Color.WHITE);
+
+        add(controlPanel, BorderLayout.NORTH);
+        add(graphPanel, BorderLayout.CENTER);
+    }
+
+    private void addVertex() {
+        // Example conversion, adjust based on T's type
+        T vertex = (T) vertexField.getText();
+        graph.addVertex(vertex);
+        repaint();
+    }
+
+    private void addEdge() {
+        // Example conversion, adjust based on T's type
+        T source = (T) sourceField.getText();
+        T destination = (T) destinationField.getText();
+        int weight = Integer.parseInt(weightField.getText());
+        graph.addEdge(source, destination, weight);
+        repaint();
+    }
+
+    private void drawGraph(Graphics g) {
+        Set<T> vertices = graph.getVerticies();
+        // Draw vertices
+        // This is a placeholder, you need to map your vertices to coordinates
+
+        // Draw edges
+        for (T vertex : vertices) {
+            List<Graph<T>.Edge> edges = graph.getEdges(vertex);
+            for (Graph<T>.Edge edge : edges) {
+                // Draw edge from vertex to edge.destination
+                // Again, this requires mapping to screen coordinates
+            }
+        }
     }
 
     public static void main(String[] args) {
-        /*SwingUtilities.invokeLater(() -> {
-            new GraphGUI().setVisible(true);
-        });*/
-
         Graph<String> graph = new Graph<>(GraphType.DIRECTED);
-        graph.addVertex("A");
-        graph.addVertex("B");
-        graph.addVertex("C");
-        graph.addVertex("D");
-        graph.addVertex("E");
-        graph.addVertex("F");
-        graph.addEdge("A", "B", 1);
-        graph.addEdge("A", "C", 1);
-        graph.addEdge("B", "C", 1);
-        graph.addEdge("B", "D", 2);
-        graph.addEdge("C", "E", 1);
-        graph.addEdge("D", "C", 1);
-        graph.addEdge("D", "E", 2);
-        graph.addEdge("D", "F", 3);
-        graph.addEdge("F", "E", 1);
-
-        System.out.println(graph.DFS("A"));
-
-        graph.printTraversal(graph.BFS("A"));
+        SwingUtilities.invokeLater(() -> {
+            GraphGUI<String> visualizer = new GraphGUI<>(graph);
+            visualizer.setVisible(true);
+        });
     }
 }
