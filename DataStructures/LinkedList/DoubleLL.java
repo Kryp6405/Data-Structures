@@ -206,15 +206,29 @@ public class DoubleLL<T> {
         head = tail = null;
     }
 
+    public int indexOf(T val){
+        if(!contains(val))
+            return -1;
+        else{
+            for(int i = 0; i < size; i++){
+                if(get(i).equals(val)) 
+                    return i;
+            }
+
+            return -1;
+        }
+    }
+
     public String toString(){
         if(size == 0)
             return "Empty List";
 
         StringBuffer sb = new StringBuffer();
+        sb.append("[");
         for(int i = 0; i < size-1; i++){
-            sb.append("["+get(i)+"] --> ");
+            sb.append(get(i)+", ");
         }
-        sb.append("["+get(size-1)+"]");
+        sb.append(get(size-1)+"]");
 
         return sb.toString();
     }

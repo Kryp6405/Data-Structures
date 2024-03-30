@@ -200,6 +200,19 @@ public class SingleLL<T> {
         head = null;
     }
 
+    public int indexOf(T val){
+        if(!contains(val))
+            return -1;
+        else{
+            for(int i = 0; i < size; i++){
+                if(get(i).equals(val)) 
+                    return i;
+            }
+
+            return -1;
+        }
+    }
+
     public String toString(){
         if(size == 0)
             return "Empty List";
